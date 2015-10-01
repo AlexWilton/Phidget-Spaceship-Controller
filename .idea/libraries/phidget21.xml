@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="phidget21">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/phidget21.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="file://$PROJECT_DIR$/lib/javadoc" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>
