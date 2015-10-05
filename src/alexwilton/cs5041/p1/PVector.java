@@ -20,4 +20,8 @@ public class PVector {
         x *= val;
         y *= val;
     }
+
+    public PVector copy() {
+        return new PVector(x,y);
+    }
 }

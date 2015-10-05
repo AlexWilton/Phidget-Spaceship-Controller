@@ -1,46 +1,62 @@
 package alexwilton.cs5041.p1;
 
-import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.Node;
-import javafx.scene.shape.Polygon;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 class SpaceShip {
-    private final static double SHIP_WIDTH = 10;
-    private final static double SHIP_LENGTH = 15;
-    private final static double SHIP_LINE_WIDTH_EXTERNAL = 2;
-    private Color color;
-
-    private Polygon shipPolygon; // main visual of the spaceShip
+    private static Image spaceshipImg = null;
+    private ImageView shipImgView;
 
     private PVector position;
     private PVector velocity;
     private PVector acceleration;
     private double direction; // direction in radians
 
-    public SpaceShip() {
-        // main object for the graphics of the ship
-        shipPolygon = new Polygon();
-        shipPolygon.getPoints().addAll(-SHIP_WIDTH / 2, 0.0, +SHIP_WIDTH / 2, 0.0, 0.0, SHIP_LENGTH);
-        color = Color.RED;
-        shipPolygon.setStroke(Color.BLACK);
-        shipPolygon.setFill(color);
-        shipPolygon.setStrokeWidth(SHIP_LINE_WIDTH_EXTERNAL);
+    private SpaceShipLaser spaceShipLaser;
 
-        position = new PVector(0,0);
+
+    public SpaceShip() {
+        setupInitGraphics();
+        position = new PVector(App.WIDTH/2,App.HEIGHT/2);
         velocity = new PVector(0,0);
         acceleration = new PVector(0,0);
         direction = 0;
+        spaceShipLaser = new SpaceShipLaser(this);
     }
 
-    public Node getVisuals() {
-        return shipPolygon;
+    private void setupInitGraphics(){
+        if(spaceshipImg == null){
+            try {
+                spaceshipImg = new Image(new FileInputStream("images/spaceship.png"));
+            } catch (FileNotFoundException e) {
+                System.out.println("Cannot Find Spaceship Image");
+            }
+        }
+        shipImgView = new ImageView(spaceshipImg);
+        shipImgView.setScaleX(0.5);
+        shipImgView.setScaleY(0.5);
     }
 
-    public void updatePos() {
+    public List<Node> getVisuals() {
+        List<Node> visuals = new ArrayList<>();
+        visuals.add(spaceShipLaser.getVisuals());
+        visuals.add(shipImgView); //ship on top!
+        return visuals;
+    }
+
+    public void updateForFrame() {
         double sizeSceneX  = App.WIDTH, sizeSceneY = App.HEIGHT;
 
         //apply drag
-        velocity.mul(0.995);
+        velocity.mul(0.99);
 
         // update the position and velocity of the ship
         position.add(velocity);
@@ -66,44 +82,35 @@ class SpaceShip {
             direction = Math.PI*2;
         }
 
-        shipPolygon.setRotate(-90-direction*180/Math.PI); // setRotate works in degrees        
-        shipPolygon.setTranslateX(position.x);
-        shipPolygon.setTranslateY(position.y);
+        shipImgView.setRotate(-90 - direction * 180 / Math.PI); // setRotate works in degrees
+        shipImgView.setTranslateX(position.x - spaceshipImg.getWidth()/2);
+        shipImgView.setTranslateY(position.y - spaceshipImg.getHeight()/2);
 
-    }
+        spaceShipLaser.updateForFrame();
 
-    public double getDirection() {
-        return direction;
     }
 
     public void setDirection(double direction) {
         this.direction = direction;
     }
 
-//    public void increaseSpeed(double accel) {
-//        double newSpeedX = speedX + Math.cos(-direction)*accel;
-//        double newSpeedY = speedY + Math.sin(-direction)*accel;
-//        if(distance(newSpeedX, newSpeedY) < 5){
-//            speedX = newSpeedX;
-//            speedY = newSpeedY;
-//        }
-//    }
-
-    public void turn(double d) {
-        direction = direction+d;
-        if (direction > Math.PI*2) direction = 0;
-        if (direction < 0) direction = Math.PI*2;
-    }
-
-    public double distance(double x, double y){
-        return Math.sqrt(Math.pow(x,2) + Math.pow(y, 2));
-    }
-
-    public double getSpeed(){
-        return distance(velocity.x, velocity.y);
-    }
-
     public void setAcceleration(PVector acceleration) {
         this.acceleration = acceleration;
+    }
+
+    public void attemptToFireLaser() {
+        spaceShipLaser.fireLaser();
+    }
+
+    public PVector getPosition() {
+        return position;
+    }
+
+    public double getDirection() {
+        return direction;
+    }
+
+    public SpaceShipLaser.LaserState getLaserState() {
+        return spaceShipLaser.getLaserState();
     }
 }

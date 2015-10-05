@@ -11,20 +11,21 @@ public class App extends Application {
     public final static int WIDTH = 800;
     public final static int HEIGHT = 600;
 
-    private SpaceShip spaceShip;
+    private GameModel model;
     private Scene scene;
     private Controller controller;
 
     @Override
     public void start(Stage stage) {
         /* Setup MODEL*/
-        spaceShip = new SpaceShip();
+        model = new GameModel();
 
         /* Setup VIEW */
         setupStage(stage);
 
         /* Setup CONTROLLER */
-        controller = new Controller(this);
+        controller = new Controller(model);
+
 
         /* Setup and Start App Loop */
         (new AnimationTimer() {
@@ -40,7 +41,7 @@ public class App extends Application {
         Pane root = new Pane();
 
         // add the spaceShip visuals
-        root.getChildren().add(spaceShip.getVisuals());
+        root.getChildren().addAll(model.getVisuals());
 
         // create the main scene
         scene = new Scene(root, WIDTH, HEIGHT);
@@ -51,15 +52,14 @@ public class App extends Application {
     }
 
     public void mainUpdate() {
-        spaceShip.updatePos();
+        model.updateForFrame();
         controller.updateSpaceShipAcceleration();
+        controller.updateSpaceShipDirection();
+        controller.updateLEDsWithLaserState();
     }
 
     public static void start(){
         launch();
     }
 
-    public SpaceShip getSpaceShip() {
-        return spaceShip;
-    }
 }

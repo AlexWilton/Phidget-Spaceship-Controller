@@ -4,8 +4,11 @@
       <root url="jar://$PROJECT_DIR$/lib/phidget21.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="file://$PROJECT_DIR$/lib/javadoc" />
+      <root url="file://$PROJECT_DIR$/lib/javadoc/javafx" />
+      <root url="file://$PROJECT_DIR$/lib/javadoc/phidget" />
     </JAVADOC>
-    <SOURCES />
+    <SOURCES>
+      <root url="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home/javafx-src.zip!/" />
+    </SOURCES>
   </library>
 </component>

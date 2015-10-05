@@ -11,8 +11,17 @@ public class Controller implements AttachListener,
 	private int initX, initY;
 	private SpaceShip spaceShip;
 
-	public Controller(App app) {
-		spaceShip = app.getSpaceShip();
+	private final int SENSOR_ID_MINISTICK_X = 0;
+	private final int SENSOR_ID_MINISTICK_Y = 1;
+	private final int SENSOR_ID_LIGHT = 3;
+	private final int SENSOR_ID_ROTATION = 7;
+
+	private final int LED_GREEN_OUTPUT_ID = 0;
+	private final int LED_YELLOW_OUTPUT_ID = 2;
+	private final int LED_RED_OUTPUT_ID = 4;
+
+	public Controller(GameModel gameModel) {
+		spaceShip = gameModel.getSpaceShip();
 		initialize();
 	}
 	
@@ -51,9 +60,10 @@ public class Controller implements AttachListener,
 	 */
 	public void updateSpaceShipDirection(){
 		try{
-			int xVal = ik.getSensorValue(0);
-			int yVal = ik.getSensorValue(1);
-			System.out.println("x: "+ xVal + ", y: " + yVal);
+			int xVal = ik.getSensorValue(SENSOR_ID_MINISTICK_X);
+			int yVal = ik.getSensorValue(SENSOR_ID_MINISTICK_Y);
+			if(Math.abs(xVal - initX) < 30 && Math.abs(yVal - initY) < 30) return; //ignore very small movements
+
 			double newDirectionAngle;
 			if(yVal > initY)
 				newDirectionAngle = Math.atan2(yVal - initY, xVal - initX);
@@ -77,12 +87,41 @@ public class Controller implements AttachListener,
 
 	@Override
 	public void sensorChanged(SensorChangeEvent sce) {
-		updateSpaceShipDirection();
+		if(sce.getIndex() == SENSOR_ID_LIGHT) checkForLaserFire();
 	}
 
 	@Override
 	public void error(ErrorEvent errorEvent) {
 		System.out.println("Error: " + errorEvent.getException().getDescription());
+	}
+
+	public void checkForLaserFire() {
+		try {
+			int lightSensorVal = ik.getSensorValue(SENSOR_ID_LIGHT);
+			if(lightSensorVal < 25) spaceShip.attemptToFireLaser();
+		}catch (PhidgetException e){ System.out.println("Error checking light sensor value");}
+	}
+
+	public void updateLEDsWithLaserState() {
+		try {
+			switch (spaceShip.getLaserState()) {
+				case READY: //show green LED only
+					ik.setOutputState(LED_GREEN_OUTPUT_ID, true);
+					ik.setOutputState(LED_YELLOW_OUTPUT_ID, false);
+					ik.setOutputState(LED_RED_OUTPUT_ID, false);
+					break;
+				case FIRING: //show red+yellow LED
+					ik.setOutputState(LED_GREEN_OUTPUT_ID, false);
+					ik.setOutputState(LED_YELLOW_OUTPUT_ID, true);
+					ik.setOutputState(LED_RED_OUTPUT_ID, true);
+					break;
+				case COOLING_DOWN: //show yellow LED only
+					ik.setOutputState(LED_GREEN_OUTPUT_ID, false);
+					ik.setOutputState(LED_YELLOW_OUTPUT_ID, true);
+					ik.setOutputState(LED_RED_OUTPUT_ID, false);
+					break;
+			}
+		}catch (PhidgetException e){ System.out.println("Failed to set LED output values");}
 	}
 }
 
