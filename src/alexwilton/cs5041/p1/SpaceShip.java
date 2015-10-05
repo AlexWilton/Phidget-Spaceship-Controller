@@ -7,28 +7,19 @@ import javafx.scene.Node;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-class SpaceShip {
+class SpaceShip extends MovingObject{
     private static Image spaceshipImg = null;
     private ImageView shipImgView;
 
-    private PVector position;
-    private PVector velocity;
-    private PVector acceleration;
-    private double direction; // direction in radians
 
     private SpaceShipLaser spaceShipLaser;
 
 
     public SpaceShip() {
+        super(App.WIDTH/2, App.HEIGHT/2);
         setupInitGraphics();
-        position = new PVector(App.WIDTH/2,App.HEIGHT/2);
-        velocity = new PVector(0,0);
-        acceleration = new PVector(0,0);
-        direction = 0;
         spaceShipLaser = new SpaceShipLaser(this);
     }
 
@@ -53,61 +44,18 @@ class SpaceShip {
     }
 
     public void updateForFrame() {
-        double sizeSceneX  = App.WIDTH, sizeSceneY = App.HEIGHT;
-
-        //apply drag
-        velocity.mul(0.99);
-
-        // update the position and velocity of the ship
-        position.add(velocity);
-        velocity.add(acceleration);
-
-        // take into account size of screen (wrapping of space)
-        if (position.x > sizeSceneX) {
-            position.x = position.x % sizeSceneX;
-        }
-        if (position.y > sizeSceneY) {
-            position.y = position.y % sizeSceneY;
-        }
-        if (position.x < 0) {
-            position.x = sizeSceneX;
-        }
-        if (position.y < 0) {
-            position.y = sizeSceneY;
-        }
-        if (direction>Math.PI*2) {
-            direction = 0;
-        }
-        if (direction<0) {
-            direction = Math.PI*2;
-        }
+        super.updateForFrame();
 
         shipImgView.setRotate(-90 - direction * 180 / Math.PI); // setRotate works in degrees
         shipImgView.setTranslateX(position.x - spaceshipImg.getWidth()/2);
         shipImgView.setTranslateY(position.y - spaceshipImg.getHeight()/2);
 
         spaceShipLaser.updateForFrame();
-
     }
 
-    public void setDirection(double direction) {
-        this.direction = direction;
-    }
-
-    public void setAcceleration(PVector acceleration) {
-        this.acceleration = acceleration;
-    }
 
     public void attemptToFireLaser() {
         spaceShipLaser.fireLaser();
-    }
-
-    public PVector getPosition() {
-        return position;
-    }
-
-    public double getDirection() {
-        return direction;
     }
 
     public SpaceShipLaser.LaserState getLaserState() {
