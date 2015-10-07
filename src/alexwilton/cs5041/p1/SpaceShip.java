@@ -48,7 +48,7 @@ class SpaceShip extends MovingObject{
 
         shipImgView.setRotate(-90 - direction * 180 / Math.PI); // setRotate works in degrees
         shipImgView.setTranslateX(position.x - spaceshipImg.getWidth()/2);
-        shipImgView.setTranslateY(position.y - spaceshipImg.getHeight()/2);
+        shipImgView.setTranslateY(position.y - spaceshipImg.getHeight() / 2);
 
         spaceShipLaser.updateForFrame();
     }
@@ -60,5 +60,9 @@ class SpaceShip extends MovingObject{
 
     public SpaceShipLaser.LaserState getLaserState() {
         return spaceShipLaser.getLaserState();
+    }
+
+    public void checkForLaserIntersection(Enemy enemy) {
+        spaceShipLaser.checkForIntersection(enemy);
     }
 }

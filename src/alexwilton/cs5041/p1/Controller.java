@@ -10,6 +10,7 @@ public class Controller implements AttachListener,
 	private InterfaceKitPhidget ik;
 	private int initX, initY;
 	private SpaceShip spaceShip;
+	private Enemy enemy;
 
 	private final int SENSOR_ID_MINISTICK_X = 0;
 	private final int SENSOR_ID_MINISTICK_Y = 1;
@@ -22,6 +23,7 @@ public class Controller implements AttachListener,
 
 	public Controller(GameModel gameModel) {
 		spaceShip = gameModel.getSpaceShip();
+		enemy = gameModel.getEnemy();
 		initialize();
 	}
 	
@@ -122,6 +124,19 @@ public class Controller implements AttachListener,
 					break;
 			}
 		}catch (PhidgetException e){ System.out.println("Failed to set LED output values");}
+	}
+
+	public void updateEnemySpeed() {
+
+		try {
+			int rotatorVal = ik.getSensorValue(SENSOR_ID_ROTATION);
+			double speedMultipler = rotatorVal / 1000.0;
+			System.out.println(speedMultipler);
+			enemy.getVelocity().mul(speedMultipler);
+		} catch (PhidgetException e) {
+			e.printStackTrace();
+		}
+
 	}
 }
 

@@ -3,7 +3,6 @@ package alexwilton.cs5041.p1;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 
 public class SpaceShipLaser {
     private SpaceShip spaceShip;
@@ -18,6 +17,7 @@ public class SpaceShipLaser {
     public Node getVisuals() {
         return laser;
     }
+
 
     public enum LaserState { READY, FIRING, COOLING_DOWN}
 
@@ -75,6 +75,11 @@ public class SpaceShipLaser {
         laser.setStroke(Color.RED);
     }
 
+
+    public void checkForIntersection(Enemy enemy) {
+        boolean hit = laser.isVisible() && !enemy.isDestroyed() && laser.intersects(enemy.getPosition().x, enemy.getPosition().y, enemy.getWidth(), enemy.getHeight());
+        if(hit) enemy.destroy();
+    }
 
     public boolean isLaserFiring(){
         return laserState == LaserState.READY;

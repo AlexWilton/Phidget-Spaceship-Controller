@@ -12,7 +12,7 @@ public class GameModel {
 
     public GameModel(){
         spaceShip = new SpaceShip();
-        enemy = new Enemy(500, 100, spaceShip);
+        enemy = new Enemy(200, 100, spaceShip);
     }
 
     public SpaceShip getSpaceShip() {
@@ -28,6 +28,11 @@ public class GameModel {
 
     public void updateForFrame(){
         spaceShip.updateForFrame();
+        spaceShip.checkForLaserIntersection(enemy);
         enemy.updateForFrame();
+    }
+
+    public Enemy getEnemy() {
+        return enemy;
     }
 }

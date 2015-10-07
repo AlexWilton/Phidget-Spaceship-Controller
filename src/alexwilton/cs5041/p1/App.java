@@ -55,6 +55,7 @@ public class App extends Application {
         model.updateForFrame();
         controller.updateSpaceShipAcceleration();
         controller.updateSpaceShipDirection();
+        controller.updateEnemySpeed();
         controller.updateLEDsWithLaserState();
     }
 

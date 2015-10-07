@@ -12,7 +12,7 @@ public abstract class MovingObject {
     protected double direction; // direction in radians
 
     public MovingObject(int positionX, int positionY) {
-        position = new PVector(App.WIDTH/2,App.HEIGHT/2);
+        position = new PVector(positionX,positionY);
         velocity = new PVector(0,0);
         acceleration = new PVector(0,0);
         direction = 0;
@@ -59,6 +59,13 @@ public abstract class MovingObject {
         this.acceleration = acceleration;
     }
 
+    public PVector getVelocity() {
+        return velocity;
+    }
+
+    public PVector getAcceleration() {
+        return acceleration;
+    }
 
     public PVector getPosition() {
         return position;
