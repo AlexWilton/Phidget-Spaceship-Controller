@@ -12,6 +12,8 @@ public class Controller implements AttachListener,
 	private SpaceShip spaceShip;
 	private Enemy enemy;
 
+	private final double MAX_ANGLE_TURN = 0.05; //per frame
+
 	private final int SENSOR_ID_MINISTICK_X = 0;
 	private final int SENSOR_ID_MINISTICK_Y = 1;
 	private final int SENSOR_ID_LIGHT = 3;
@@ -34,7 +36,7 @@ public class Controller implements AttachListener,
 			ik.addErrorListener(this);
 			ik.addSensorChangeListener(this);
 			ik.openAny();
-			System.out.println("Please attach Ministick Sensor and Rotational Sensor Phidge InterfaceKit");
+			System.out.println("Please attach the Phidget InterfaceKit with appropriate sensors and LEDs");
 			ik.waitForAttachment();
 
 			/* Record initial x and y to use as the reference centre point */
@@ -66,12 +68,23 @@ public class Controller implements AttachListener,
 			int yVal = ik.getSensorValue(SENSOR_ID_MINISTICK_Y);
 			if(Math.abs(xVal - initX) < 30 && Math.abs(yVal - initY) < 30) return; //ignore very small movements
 
-			double newDirectionAngle;
+			double targetDirectionAngle;
 			if(yVal > initY)
-				newDirectionAngle = Math.atan2(yVal - initY, xVal - initX);
+				targetDirectionAngle = Math.atan2(yVal - initY, xVal - initX);
 			else
-				newDirectionAngle = Math.PI + Math.atan2(-(yVal - initY), -(xVal - initX));
-			spaceShip.setDirection(newDirectionAngle);
+				targetDirectionAngle = Math.PI + Math.atan2(-(yVal - initY), -(xVal - initX));
+
+			double currentDirection = spaceShip.getDirection();
+			double newDirection;
+			double angleDifference = Math.abs(targetDirectionAngle - currentDirection);
+			if(currentDirection < targetDirectionAngle){
+				newDirection = currentDirection + ( angleDifference > MAX_ANGLE_TURN ? MAX_ANGLE_TURN : angleDifference);
+			}else{
+				newDirection = currentDirection - ( angleDifference > MAX_ANGLE_TURN ? MAX_ANGLE_TURN : angleDifference);
+			}
+
+
+			spaceShip.setDirection(newDirection);
 		}catch (Exception e){}
 	}
 
@@ -131,7 +144,6 @@ public class Controller implements AttachListener,
 		try {
 			int rotatorVal = ik.getSensorValue(SENSOR_ID_ROTATION);
 			double speedMultipler = rotatorVal / 1000.0;
-			System.out.println(speedMultipler);
 			enemy.getVelocity().mul(speedMultipler);
 		} catch (PhidgetException e) {
 			e.printStackTrace();

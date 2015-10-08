@@ -21,8 +21,8 @@ public class GameModel {
 
     public Collection<? extends Node> getVisuals() {
         List<Node> visuals = new ArrayList<>();
-        visuals.addAll(spaceShip.getVisuals());
         visuals.addAll(enemy.getVisuals());
+        visuals.addAll(spaceShip.getVisuals());
         return visuals;
     }
 

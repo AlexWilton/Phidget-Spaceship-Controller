@@ -27,7 +27,7 @@ public class App extends Application {
         controller = new Controller(model);
 
 
-        /* Setup and Start App Loop */
+        /* Setup and Start Game Loop */
         (new AnimationTimer() {
             @Override
             public void handle(long now) {
