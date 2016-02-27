@@ -1,4 +1,4 @@
-package alexwilton.cs5041.p1;
+package alexwilton.phidgetSpaceship;
 
 import javafx.scene.Node;
 import javafx.scene.paint.Color;

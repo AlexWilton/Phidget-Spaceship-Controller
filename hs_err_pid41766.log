@@ -434,7 +434,7 @@ Dynamic libraries:
 
 VM Arguments:
 jvm_args: -Didea.launcher.port=7533 -Didea.launcher.bin.path=/Applications/IntelliJ IDEA 14.app/Contents/bin -Dfile.encoding=UTF-8 
-java_command: com.intellij.rt.execution.application.AppMain alexwilton.cs5041.p1.App
+java_command: com.intellij.rt.execution.application.AppMain App
 Launcher Type: SUN_STANDARD
 
 Environment Variables:

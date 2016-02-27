@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: alexwilton.cs5041.p1.Main
+Main-Class: alexwilton.phidgetSpaceship.Main
 

@@ -7,8 +7,6 @@
       <root url="file://$PROJECT_DIR$/lib/javadoc/javafx" />
       <root url="file://$PROJECT_DIR$/lib/javadoc/phidget" />
     </JAVADOC>
-    <SOURCES>
-      <root url="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home/javafx-src.zip!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>
